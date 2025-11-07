@@ -18,7 +18,12 @@ export const useAuth = () => {
         setUser(null);
       } else {
         const decoded = AuthService.getDecoded();
-        setUser(decoded);
+        const role = AuthService.getRole();
+        setUser({
+          email: decoded?.sub || decoded?.email,
+          role,
+          raw: decoded
+        });
         const valid = AuthService.isAuthenticated();
         setIsAuthenticated(valid);
       }

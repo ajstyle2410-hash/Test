@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css";
 import Script from "next/script";
+import { NavigationLogger } from './core/components/NavigationLogger';
 
 export const metadata = {
   title: "Arc-i-Tech",
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-gramm="false" suppressHydrationWarning>
       <head />
       <body suppressHydrationWarning>
+          <NavigationLogger />
         {children}
         <Script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

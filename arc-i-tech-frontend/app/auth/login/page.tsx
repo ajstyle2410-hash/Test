@@ -29,22 +29,21 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await AuthService.login(formData);
-      
-      // After successful login, get user details and redirect based on role
-      const user = AuthService.getDecoded();
-      if (!user || !user.role) {
+        const response = await AuthService.login(formData);
+        if (!response || !response.role) {
         throw new Error('Invalid user data');
       }
 
       const defaultRoutes: Record<string, string> = {
         'SUPER_ADMIN': '/dashboard/super-admin',
-        'ADMIN': '/dashboard/sub-admin',
+        'ADMIN': '/dashboard/admin',
+        'SUB_ADMIN': '/dashboard/sub-admin',
         'DEVELOPER': '/dashboard/developer',
-        'USER': '/dashboard'
+        'CUSTOMER': '/dashboard/user'
       };
 
-      const redirectPath = defaultRoutes[user.role] || '/dashboard';
+        const redirectPath = defaultRoutes[response.role] || '/dashboard';
+        console.log('Redirecting to:', redirectPath);
       router.push(redirectPath);
     } catch (err: any) {
       setError(err?.message || 'Login failed. Please check your credentials.');

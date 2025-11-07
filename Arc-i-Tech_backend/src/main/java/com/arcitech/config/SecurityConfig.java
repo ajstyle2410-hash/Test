@@ -52,11 +52,9 @@ public class SecurityConfig {
 
                 // ✅ PUBLIC ROUTES
                 .requestMatchers(
-                    "/api/auth/register",
-                    "/api/auth/login",
-                    "/api/auth/refresh",
-                    "/api/inquiries",
-                    "/api/inquiries/**",
+                        "/api/auth/register",
+                        "/api/auth/login",
+                        "/api/auth/refresh",
                     "/public/**",
                     "/", "/index.html", "/favicon.ico",
                     "/css/**", "/js/**", "/images/**"

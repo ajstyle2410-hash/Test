@@ -5,10 +5,11 @@ export const API_BASE_URL =
 export const APP_NAME = "Arc-i-Tech Platform";
 
 export const ROLES = {
+  SUPER_ADMIN: "SUPER_ADMIN",
   ADMIN: "ADMIN",
-  USER: "USER",
-  MENTOR: "MENTOR",
-  STUDENT: "STUDENT",
+  SUB_ADMIN: "SUB_ADMIN",
+  DEVELOPER: "DEVELOPER",
+  CUSTOMER: "CUSTOMER"
 } as const;
 
 export const MESSAGES = {
