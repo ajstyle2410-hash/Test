@@ -1,0 +1,40 @@
+/* src/app/shared/styles/theme.css */
+
+/* === Custom Theme Colors === */
+:root {
+  --primary-color: #004aad;
+  --secondary-color: #007bff;
+  --accent-color: #00bcd4;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --light-bg: #f8f9fa;
+}
+
+/* === Global Typography === */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--light-bg);
+  color: #212529;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* === Reusable Utility Classes === */
+.card-shadow {
+  box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #00347a;
+}
