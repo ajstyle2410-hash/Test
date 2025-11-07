@@ -23,7 +23,7 @@ export default function RegisterPage() {
     setMsg(null);
     setBusy(true);
     try {
-      await AuthService.register(fullName, email, password, programType);
+  await AuthService.register({ fullName, email, password, programType });
       setMsg("Registration successful. Redirecting to login...");
       setTimeout(() => router.push("/auth/login"), 1400);
     } catch (err: any) {

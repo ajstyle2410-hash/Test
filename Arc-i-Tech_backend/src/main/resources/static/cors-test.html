@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test</title>
+    <script>
+        function testCors() {
+            fetch('http://localhost:8080/api/health', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                document.getElementById('status').textContent = 'Success!';
+                document.getElementById('status').style.color = 'green';
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = error.message;
+                document.getElementById('status').textContent = 'Failed!';
+                document.getElementById('status').style.color = 'red';
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>CORS Test Page</h1>
+    <button onclick="testCors()">Test CORS</button>
+    <h2>Status: <span id="status">Not tested</span></h2>
+    <pre id="result"></pre>
+</body>
+</html>

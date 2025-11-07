@@ -27,9 +27,10 @@ public class JwtUtils {
     public String generateJwtToken(org.springframework.security.core.Authentication authentication) {
         org.springframework.security.core.userdetails.User userPrincipal =
                 (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-
+        
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
+                .claim("role", userPrincipal.getAuthorities().stream().findFirst().orElse(null))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)

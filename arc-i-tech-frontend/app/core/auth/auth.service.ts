@@ -1,10 +1,20 @@
 // app/core/auth/auth.service.ts
 'use client';
 
+// Use ESM import for jwt-decode v4
 import { jwtDecode } from "jwt-decode";
 import axiosClient from "@/app/lib/axiosClient";
 
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
+// Type declarations for environment variables
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      NEXT_PUBLIC_API_BASE_URL?: string;
+    }
+  }
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 const TOKEN_KEY = "arcitech_token";
 
 export interface LoginRequest {
@@ -36,9 +46,15 @@ type JwtPayload = {
 };
 
 export const AuthService = {
-  async login(request: LoginRequest) {
+  // login supports both: login({ email, password }) and login(email, password)
+  async login(requestOrEmail: LoginRequest | string, maybePassword?: string) {
     try {
-      const res = await axiosClient.post<LoginResponse>(`/auth/login`, request);
+      const request: LoginRequest =
+        typeof requestOrEmail === 'string'
+          ? { email: requestOrEmail, password: maybePassword || '' }
+          : (requestOrEmail as LoginRequest);
+
+      const res = await axiosClient.post<LoginResponse>(`/api/auth/login`, request);
       const data = res.data;
       const token = data?.token;
       if (!token) throw new Error("Invalid response from server");
@@ -53,11 +69,24 @@ export const AuthService = {
 
   async register(request: RegisterRequest) {
     try {
-      const res = await axiosClient.post(`/auth/register`, request);
+      const res = await axiosClient.post(`/api/auth/register`, request);
       return res.data;
     } catch (error: any) {
-      console.error('Registration error:', error.response?.data);
-      throw new Error(error.response?.data?.message || 'Registration failed');
+      console.error('Registration error:', error);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Server responded with error:', error.response.data);
+        throw new Error(error.response.data?.message || 'Registration failed');
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+        throw new Error('No response from server. Please check if the server is running.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error setting up request:', error.message);
+        throw new Error('Failed to make request: ' + error.message);
+      }
     }
   },
 
@@ -87,8 +116,31 @@ export const AuthService = {
     }
   },
 
+  // Backwards-compatible alias used across older call-sites
+  getDecodedToken(): JwtPayload | null {
+    return this.getDecoded();
+  },
+
   getRole(): string | null {
-    return typeof window !== 'undefined' ? localStorage.getItem('user_role') : null;
+    const role = typeof window !== 'undefined' ? localStorage.getItem('user_role') : null;
+    // Map backend roles to frontend roles
+    switch (role) {
+      case 'SUPER_ADMIN':
+        return 'SUPER_ADMIN';
+      case 'SUB_ADMIN':
+        return 'SUB_ADMIN';
+      case 'DEVELOPER':
+        return 'DEVELOPER';
+      case 'CUSTOMER':
+        return 'USER';
+      default:
+        return role;
+    }
+  },
+
+  // Backwards-compatible alias expected by some components
+  getUserRole(): string | null {
+    return this.getRole();
   },
 
   isAuthenticated() {
